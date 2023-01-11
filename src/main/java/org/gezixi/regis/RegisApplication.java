@@ -9,5 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class RegisApplication {
     public static void main(String[] args) {
         SpringApplication.run(RegisApplication.class, args);
+        log.info("项目启动成功！！！");
     }
 }
