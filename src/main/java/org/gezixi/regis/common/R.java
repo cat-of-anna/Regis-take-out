@@ -29,7 +29,7 @@ public class R<T> {
     public static <T> R<T> error(String msg) {
         R r = new R();
         r.msg = msg;
-        r.code = 404;
+        r.code = 0;
         return r;
     }
 
