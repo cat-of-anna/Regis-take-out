@@ -63,6 +63,13 @@ public class EmployeeController {
         return R.success("退出成功");
     }
 
+    /**
+     * 新增员工
+     *
+     * @param request 请求
+     * @param employee 员工对象
+     * @return 提示信息
+     */
     @PostMapping
     public R<String> save(HttpServletRequest request, @RequestBody Employee employee) {
         employee.setPassword(DigestUtils.md5DigestAsHex(ParamConstant.DEFAULT_PASSWORD.getBytes()));
@@ -72,6 +79,7 @@ public class EmployeeController {
         Long employeeId = (Long) request.getSession().getAttribute(ParamConstant.USER_SESSION_NAME);
         employee.setCreateUser(employeeId);
         employee.setUpdateUser(employeeId);
+        employeeService.save(employee);
         return R.success("新增员工成功");
     }
 
@@ -92,14 +100,39 @@ public class EmployeeController {
         queryWrapper.like(Optional.ofNullable(name).isPresent(), Employee::getName, name);
         // 添加排序条件
         queryWrapper.orderByDesc(Employee::getUpdateTime);
+        // 执行查询
         employeeService.page(pageInfo, queryWrapper);
         return R.success(pageInfo);
     }
 
 
+    /**
+     * 编辑员工信息
+     *
+     * @param request 请求
+     * @param employee 员工对象
+     * @return 提示信息
+     */
+    @PutMapping
+    public R<String> update(HttpServletRequest request, @RequestBody Employee employee) {
+        employeeService.updateById(employee);
+        Long curEmployeeId = (Long) request.getSession().getAttribute(ParamConstant.USER_SESSION_NAME);
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(curEmployeeId);
+        return R.success("员工信息修改成功");
+    }
 
-
-
+    /**
+     * 编辑员工信息时反填
+     *
+     * @param id 需要修改的员工id
+     * @return 员工对象
+     */
+    @GetMapping("/{id}")
+    public R<Employee> getEmployeeById(@PathVariable Long id) {
+        Employee employee = employeeService.getById(id);
+        return R.success(employee);
+    }
 
 
 
