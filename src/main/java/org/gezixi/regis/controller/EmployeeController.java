@@ -73,12 +73,8 @@ public class EmployeeController {
     @PostMapping
     public R<String> save(HttpServletRequest request, @RequestBody Employee employee) {
         employee.setPassword(DigestUtils.md5DigestAsHex(ParamConstant.DEFAULT_PASSWORD.getBytes()));
-        employee.setCreateTime(LocalDateTime.now());
-        employee.setUpdateTime(LocalDateTime.now());
         // 添加操作员工
         Long employeeId = (Long) request.getSession().getAttribute(ParamConstant.USER_SESSION_NAME);
-        employee.setCreateUser(employeeId);
-        employee.setUpdateUser(employeeId);
         employeeService.save(employee);
         return R.success("新增员工成功");
     }
@@ -117,8 +113,6 @@ public class EmployeeController {
     public R<String> update(HttpServletRequest request, @RequestBody Employee employee) {
         employeeService.updateById(employee);
         Long curEmployeeId = (Long) request.getSession().getAttribute(ParamConstant.USER_SESSION_NAME);
-        employee.setUpdateTime(LocalDateTime.now());
-        employee.setUpdateUser(curEmployeeId);
         return R.success("员工信息修改成功");
     }
 
